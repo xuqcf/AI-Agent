@@ -28,4 +28,4 @@ def get_files_info(working_directory, directory="."):
             )
         return "\n".join(lines)
     except OSError as e:
-        return f"Error: "
+        return f"Error: {e}"
