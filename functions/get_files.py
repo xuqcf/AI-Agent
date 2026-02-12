@@ -3,7 +3,10 @@ import os
 def get_files_info(working_directory, directory="."): 
     try:  
         path = os.path.abspath(working_directory)
-        target_dir = os.path.normpath(os.path.join(working_directory, directory))
+        target_dir = os.path.abspath(
+    os.path.normpath(os.path.join(working_directory, directory))
+)
+
 
         
         valid_target_dir = os.path.commonpath([path, target_dir]) == path
@@ -25,4 +28,4 @@ def get_files_info(working_directory, directory="."):
             )
         return "\n".join(lines)
     except OSError as e:
-        return f"Error: {e}"
+        return f"Error: "
