@@ -36,15 +36,19 @@ def run_python_file(working_directory, file_path, args=None):
     except Exception as e:
         return f"Error: executing python file: {e}"
 
-schema_get_files_info = types.FunctionDeclaration(
-    name="get_files_info",
-    description="Lists files in a specified directory relative to the working directory, providing file size and directory status",
+schema_run_python_file = types.FunctionDeclaration(
+    name="run_python_file",
+    description="Runs a python file with the python3 interpreter. Accepts additional CLI args as an optional array.",
     parameters=types.Schema(
         type=types.Type.OBJECT,
         properties={
-            "directory": types.Schema(
+            "file_path": types.Schema(
                 type=types.Type.STRING,
-                description="Directory path to list files from, relative to the working directory (default is the working directory itself)",
+                description="The file to run, relative to current directory.",
+            ),
+            "args": types.Schema(
+                type=types.Type.ARRAY,
+                description="An optional array of strings to be used as the CLI args for the Python file",
             ),
         },
     ),

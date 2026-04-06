@@ -22,15 +22,19 @@ def write_file(working_directory, file_path, content):
     except Exception as e:
         return f'Error reading file "{file_path}": {e}'
 
-schema_get_files_info = types.FunctionDeclaration(
-    name="get_files_info",
-    description="Lists files in a specified directory relative to the working directory, providing file size and directory status",
+schema_write_file = types.FunctionDeclaration(
+    name="write_file",
+    description="Overwrites an existing file or writes to a new file if it doesnt exist (and creates required parent directories safely), constrained to the current working directory",
     parameters=types.Schema(
         type=types.Type.OBJECT,
         properties={
-            "directory": types.Schema(
+            "file_path": types.Schema(
                 type=types.Type.STRING,
-                description="Directory path to list files from, relative to the working directory (default is the working directory itself)",
+                description="The path to the file to write.",
+            ),
+            "content": types.Schema(
+                type=types.Type.STRING,
+                description="The content to write to the file as a string.",
             ),
         },
     ),

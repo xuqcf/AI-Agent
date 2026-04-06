@@ -7,6 +7,14 @@ from google.genai import types
 
 from prompts import system_prompt
 from functions.call_function import available_functions
+from functions.get_files_info import schema_get_files_info
+from functions.get_files_contents import schema_get_file_content
+from functions.run_python_file import schema_run_python_file
+from functions.writing_files import schema_write_file
+
+
+
+
 
 def main():
     parser = argparse.ArgumentParser(description="AI Code Assistant")
