@@ -7,6 +7,7 @@ from google.genai import types
 
 from prompts import system_prompt
 from functions.call_function import available_functions
+from functions.call_function import call_function
 
 def main():
     parser = argparse.ArgumentParser(description="AI Code Assistant")
@@ -51,6 +52,28 @@ def generate_content(client, messages, verbose):
         if response.text:
             print(response.text)
 
+    function_results = []
 
+    if calls:
+        for function_call in calls:
+            function_call_result = call_function(function_call, verbose=verbose)
+
+        if not function_call_result.parts:
+            raise Exception("Function result is empty")
+
+        if not function_call_result.parts[0].function_response:
+            raise Exception("Function response is empty")
+    
+        function_results.append(function_call_result.parts[0])
+
+    
+        if verbose:
+            print(f"-> {function_call_result.parts[0].function_response.response}")
+    else:
+        if response.text:
+            print(response.text)
+        
+            
+        
 if __name__ == "__main__":
     main()
