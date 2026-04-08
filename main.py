@@ -78,11 +78,15 @@ def generate_content(client, messages, verbose):
             
                 if verbose:
                     print(f"-> {function_call_result.parts[0].function_response.response}")
-            else:
-                if response.text:
-                    print(response.text)
-            
-            
+
+        
+            messages.append(types.Content(role="user", parts=function_results))
+        else:
+            break   
+
+    else:
+        print("Error: Maximum number of iterations reached without a final response", file=sys.stderr)
+        sys.exit(1)
         
 if __name__ == "__main__":
     main()
