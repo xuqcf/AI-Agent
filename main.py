@@ -29,50 +29,59 @@ def main():
 
 
 def generate_content(client, messages, verbose):
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=messages,
-        config=types.GenerateContentConfig(
-            tools=[available_functions], system_instruction=system_prompt),
-    )
-    if not response.usage_metadata:
-        raise RuntimeError("Gemini API response appears to be malformed")
 
-    if verbose:
-        print("Prompt tokens:", response.usage_metadata.prompt_token_count)
-        print("Response tokens:", response.usage_metadata.candidates_token_count)
-    print("Response:")
+    for i in range(20):
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=messages,
+            config=types.GenerateContentConfig(
+                tools=[available_functions], system_instruction=system_prompt),
+        )
+        if not response.usage_metadata:
+            raise RuntimeError("Gemini API response appears to be malformed")
 
-    calls = response.function_calls
 
-    if calls:
-        for function_call in calls:
-            print(f"Calling function: {function_call.name}({function_call.args})")
-    else:
-        if response.text:
-            print(response.text)
+        if response.candidates:
+            for candidate in response.candidates:
+                
+                messages.append(candidate.content)
 
-    function_results = []
-
-    if calls:
-        for function_call in calls:
-            function_call_result = call_function(function_call, verbose=verbose)
-
-        if not function_call_result.parts:
-            raise Exception("Function result is empty")
-
-        if not function_call_result.parts[0].function_response:
-            raise Exception("Function response is empty")
-    
-        function_results.append(function_call_result.parts[0])
-
-    
         if verbose:
-            print(f"-> {function_call_result.parts[0].function_response.response}")
-    else:
-        if response.text:
-            print(response.text)
-        
+            print("Prompt tokens:", response.usage_metadata.prompt_token_count)
+            print("Response tokens:", response.usage_metadata.candidates_token_count)
+        print("Response:")
+
+        calls = response.function_calls
+
+
+        if calls:
+            for function_call in calls:
+                print(f"Calling function: {function_call.name}({function_call.args})")
+        else:
+            if response.text:
+                print(response.text)
+
+        function_results = []
+
+        if calls:
+            for function_call in calls:
+                function_call_result = call_function(function_call, verbose=verbose)
+
+                if not function_call_result.parts:
+                    raise Exception("Function result is empty")
+
+                if not function_call_result.parts[0].function_response:
+                    raise Exception("Function response is empty")
+            
+                function_results.append(function_call_result.parts[0])
+
+            
+                if verbose:
+                    print(f"-> {function_call_result.parts[0].function_response.response}")
+            else:
+                if response.text:
+                    print(response.text)
+            
             
         
 if __name__ == "__main__":
